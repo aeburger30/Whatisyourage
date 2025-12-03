@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sociological Aging Profile</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #102a43; line-height: 1.6; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 50px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 8px solid #334e68; }
+        
+        h1 { text-align: center; color: #102a43; margin-bottom: 5px; font-size: 2.2rem; }
+        .intro { text-align: center; margin-bottom: 40px; color: #627d98; font-size: 1.1em; max-width: 600px; margin-left: auto; margin-right: auto; }
+        
+        .section-header { 
+            background: #243b53; 
+            color: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-top: 50px; 
+            font-size: 1.4em; 
+            font-weight: 600; 
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .section-tag { font-size: 0.6em; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .section-desc { font-size: 1em; color: #486581; margin: 15px 0 25px 5px; line-height: 1.5; }
+        
+        .question { margin-bottom: 25px; padding: 25px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e1e4e8; transition: transform 0.2s; }
+        .question:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        label { display: block; font-weight: 700; margin-bottom: 12px; font-size: 1.1em; color: #243b53; }
+        select, input[type="number"] { width: 100%; padding: 14px; border-radius: 8px; border: 2px solid #d9e2ec; font-size: 16px; background: white; color: #333; }
+        
+        .checklist-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .checklist-item { background: white; padding: 15px; border-radius: 8px; border: 1px solid #d9e2ec; display: flex; align-items: center; cursor: pointer; }
+        .checklist-item:hover { background: #f0f4f8; border-color: #829ab1; }
+        .checklist-item input { margin-right: 15px; transform: scale(1.3); cursor: pointer; }
+
+        button { display: block; width: 100%; padding: 20px; background-color: #d64545; color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: 700; cursor: pointer; margin-top: 50px; transition: background 0.3s, transform 0.2s; }
+        button:hover { background-color: #a61b1b; transform: translateY(-2px); }
+        
+        #results { display: none; margin-top: 60px; padding-top: 30px; border-top: 3px solid #f0f4f8; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        
+        .result-card { background: white; padding: 30px; border-radius: 16px; border-top: 6px solid; box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+        .card-chrono { border-color: #334e68; }
+        .card-bio { border-color: #27ae60; }
+        .card-social { border-color: #d69e2e; }
+        .card-psych { border-color: #805ad5; }
+        
+        .result-icon { font-size: 2em; margin-bottom: 10px; display: block; opacity: 0.8; }
+        .result-title { font-size: 0.9em; text-transform: uppercase; letter-spacing: 2px; color: #829ab1; font-weight: 700; }
+        .age-display { font-size: 3.5rem; font-weight: 800; color: #102a43; margin: 10px 0; letter-spacing: -2px; }
+        .feedback { font-size: 0.95em; color: #486581; line-height: 1.6; border-top: 1px solid #f0f4f8; padding-top: 15px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sociological Aging Profile</h1>
+    <p class="intro">A multidimensional assessment of how you age structurally, biologically, socially, and psychologically.</p>
+
+    <form id="agingQuiz">
+        
+        <div class="section-header">
+            1. Chronological Age
+            <span class="section-tag">Structural</span>
+        </div>
+        <div class="section-desc">The time elapsed since your birth. Used by society for legal milestones (voting, driving, retirement).</div>
+        <div class="question">
+            <label for="chronoAge">What is your actual age?</label>
+            <input type="number" id="chronoAge" placeholder="e.g., 20" required min="1" max="110">
+        </div>
+
+        <div class="section-header">
+            2. Biological Age
+            <span class="section-tag">Functional</span>
+        </div>
+        <div class="section-desc">Rate your own functional fitness (how your body performs).</div>
+        
+        <div class="question">
+            <label>Mobility Estimation (Sit-to-Stand):</label>
+            <p style="font-size:0.9em; color:#666; margin-bottom:10px;">Imagine sitting on the floor and standing up <em>without</em> using your hands or knees.</p>
+            <select id="sitStand">
+                <option value="-3">I could do it easily with no hands/support.</option>
+                <option value="0">I would likely need a hand on my knee or the floor.</option>
+                <option value="3">I would definitely need support or furniture to get up.</option>
+            </select>
+        </div>
+
+        <div class="question">
+            <label>Balance Estimation (Single Leg Stance):</label>
+            <p style="font-size:0.9em; color:#666; margin-bottom:10px;">Imagine standing on one leg to put on a sock without holding anything.</p>
+            <select id="balance">
+                <option value="-2">Rock solid / Very stable.</option>
+                <option value="0">Average / Might wobble a little.</option>
+                <option value="3">Unsteady / I would need to hold a wall.</option>
+            </select>
+        </div>
+
+        <div class="question">
+            <label>Reflex Estimation (Reaction Time):</label>
+            <p style="font-size:0.9em; color:#666; margin-bottom:10px;">If someone unexpectedly tossed keys to you, how likely are you to catch them?</p>
+            <select id="reaction">
+                <option value="-2">Lightning fast / Almost always catch it.</option>
+                <option value="0">Average / Hit or miss.</option>
+                <option value="3">Slow / I usually miss.</option>
+            </select>
+        </div>
+
+        <div class="section-header">
+            3. Social Age
+            <span class="section-tag">Perception & Identity</span>
+        </div>
+        <div class="section-desc">Social age is defined by how you perceive your own standing in society.</div>
+        
+        <div class="question" style="border-left: 5px solid #d69e2e;">
+            <label for="adultIdentity">The "Arnett" Question: Do you feel that you have reached adulthood?</label>
+            <select id="adultIdentity">
+                <option value="-4">No, not really. (I still feel like a kid/dependent)</option>
+                <option value="-1">In some ways yes, in some ways no. (The "In-Between")</option>
+                <option value="3">Yes, absolutely. (Full Adult Identity)</option>
+            </select>
+        </div>
+
+        <div class="question">
+            <label>Which of these "Adult Roles" do you actually perform?</label>
+            <div class="checklist-container">
+                <label class="checklist-item"><input type="checkbox" class="social-item" value="1"> I schedule my own doctor appointments.</label>
+                <label class="checklist-item"><input type="checkbox" class="social-item" value="1"> I manage my own finances/budget.</label>
+                <label class="checklist-item"><input type="checkbox" class="social-item" value="1"> I separate laundry/do chores without reminders.</label>
+                <label class="checklist-item"><input type="checkbox" class="social-item" value="1"> I set boundaries (say "No") to family.</label>
+                <label class="checklist-item"><input type="checkbox" class="social-item" value="1"> I am comfortable doing things alone in public.</label>
+                <label class="checklist-item"><input type="checkbox" class="social-item" value="1"> I accept full responsibility for my mistakes.</label>
+            </div>
+        </div>
+
+        <div class="section-header">
+            4. Psychological Age
+            <span class="section-tag">Mindset</span>
+        </div>
+        <div class="section-desc">Your internal age identity and maturity.</div>
+        
+        <div class="question">
+            <label for="subjectiveAge">Subjective Age: Regardless of your birth certificate, what age do you *feel*?</label>
+            <input type="number" id="subjectiveAge" placeholder="e.g., 25" required>
+        </div>
+
+        <div class="question">
+            <label for="caresScore">Which best describes your mindset?</label>
+            <select id="caresScore">
+                <option value="-2">Exploration: I am still figuring out who I am. (Emerging Adulthood)</option>
+                <option value="0">Stability: I know my values and live by them. (Mature Adulthood)</option>
+                <option value="3">Rigidity: I feel stuck or set in my ways.</option>
+            </select>
+        </div>
+
+        <button type="button" onclick="calculateProfile()">Generate Aging Profile</button>
+    </form>
+
+    <div id="results">
+        <h2 style="text-align:center; color:#2c3e50; margin-bottom:40px;">Your Aging Dashboard</h2>
+        <div class="result-grid">
+            
+            <div class="result-card card-chrono">
+                <span class="result-icon">📅</span>
+                <div class="result-title">Chronological Age</div>
+                <div class="age-display" id="dispChrono">--</div>
+                <div class="feedback">Your structural age.</div>
+            </div>
+
+            <div class="result-card card-bio">
+                <span class="result-icon">🧬</span>
+                <div class="result-title">Biological Age</div>
+                <div class="age-display" id="dispBio">--</div>
+                <div class="feedback" id="feedbackBio">--</div>
+            </div>
+
+            <div class="result-card card-social">
+                <span class="result-icon">🤝</span>
+                <div class="result-title">Social Age</div>
+                <div class="age-display" id="dispSocial">--</div>
+                <div class="feedback" id="feedbackSocial">--</div>
+            </div>
+
+            <div class="result-card card-psych">
+                <span class="result-icon">🧠</span>
+                <div class="result-title">Psychological Age</div>
+                <div class="age-display" id="dispPsych">--</div>
+                <div class="feedback" id="feedbackPsych">--</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateProfile() {
+        let chronoInput = document.getElementById('chronoAge').value;
+        let subjectiveInput = document.getElementById('subjectiveAge').value;
+
+        if(!chronoInput || !subjectiveInput) {
+            alert("Please enter both your Chronological and Subjective age.");
+            return;
+        }
+
+        let chrono = parseInt(chronoInput);
+        let subjective = parseInt(subjectiveInput);
+
+        // --- 1. BIOLOGICAL (Perceived) ---
+        let sitMod = parseInt(document.getElementById('sitStand').value);
+        let balMod = parseInt(document.getElementById('balance').value);
+        let reactMod = parseInt(document.getElementById('reaction').value);
+        let bioAge = chrono + sitMod + balMod + reactMod;
+        
+        let bioMsg = (bioAge < chrono) ? "<strong>High Function:</strong> You perceive your body as younger and more capable than your calendar age." : "<strong>Risk Factor:</strong> You perceive physical limitations that usually appear at older ages.";
+
+        // --- 2. SOCIAL (Identity Based) ---
+        // Identity Modifier
+        let identityMod = parseInt(document.getElementById('adultIdentity').value);
+        
+        // Checklist Modifier (Each check adds +0.5 years of "maturity")
+        let checkboxes = document.querySelectorAll('.social-item:checked');
+        let roleScore = checkboxes.length * 0.5; 
+        
+        // Base calculation
+        let socialBase = chrono;
+        let socialAge = socialBase + identityMod + roleScore;
+
+        let socialMsg = "";
+        if (identityMod === -4) {
+            socialMsg = "<strong>Dependent Status:</strong> You do not yet view yourself as a peer to other adults.";
+        } else if (identityMod === -1) {
+            socialMsg = "<strong>Emerging Adult:</strong> Feeling 'In-Between' is the sociological definition of this life stage.";
+        } else {
+            socialMsg = "<strong>Full Adult Status:</strong> You identify completely with the expectations of society.";
+        }
+
+        // --- 3. PSYCHOLOGICAL (CARES) ---
+        let caresMod = parseInt(document.getElementById('caresScore').value);
+        let psychAge = subjective + caresMod;
+
+        let psychMsg = "";
+        let gap = chrono - psychAge;
+        if (gap > 4) {
+            psychMsg = "<strong>Youthful Bias:</strong> You feel younger than you are (common in healthy aging).";
+        } else if (gap < -2) {
+            psychMsg = "<strong>Maturity Gap:</strong> You feel older than your peers, often due to stress or responsibility.";
+        } else {
+            psychMsg = "<strong>Age-Congruent:</strong> Your internal identity matches your timeline.";
+        }
+
+        // --- DISPLAY ---
+        document.getElementById('dispChrono').innerText = chrono + " yrs";
+        document.getElementById('dispBio').innerText = bioAge + " yrs";
+        document.getElementById('feedbackBio').innerHTML = bioMsg;
+        document.getElementById('dispSocial').innerText = Math.round(socialAge) + " yrs";
+        document.getElementById('feedbackSocial').innerHTML = socialMsg;
+        document.getElementById('dispPsych').innerText = psychAge + " yrs";
+        document.getElementById('feedbackPsych').innerHTML = psychMsg;
+
+        document.getElementById('results').style.display = 'block';
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+</script>
+
+</body>
+</html>
